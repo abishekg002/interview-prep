@@ -3,127 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrepAI | Universal Interview Coach</title>
+    <title>CareerPrep 2026 | Professional Interview Coach</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .role-btn.active { border-color: #2563eb; background-color: #eff6ff; color: #1d4ed8; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .active-cat { background-color: #2563eb !important; color: white !important; }
+        .role-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-10">
+<body class="min-h-screen py-10 px-4">
 
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <div class="md:col-span-1">
-            <h2 class="text-2xl font-bold text-slate-800 mb-6">Select Your Role</h2>
-            <div id="role-list" class="space-y-2">
-                </div>
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-2">Interview Mastery Coach</h1>
+            <p class="text-slate-600">Select a category and role to begin your specialized practice.</p>
         </div>
 
-        <div class="md:col-span-2">
-            <div class="glass-card rounded-3xl shadow-2xl p-8 min-h-[500px] flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center mb-6">
-                        <span id="role-badge" class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Role</span>
-                        <span id="counter" class="text-slate-400 text-sm font-medium">Question 1/5</span>
-                    </div>
-                    
-                    <h1 id="question-text" class="text-2xl md:text-3xl font-bold text-slate-800 leading-tight mb-8">
-                        Select a role to start practicing...
-                    </h1>
+        <div class="flex justify-center gap-4 mb-8">
+            <button onclick="filterRoles('All')" id="cat-All" class="cat-btn active-cat bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">All</button>
+            <button onclick="filterRoles('Tech')" id="cat-Tech" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">Technology</button>
+            <button onclick="filterRoles('Business')" id="cat-Business" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">Business</button>
+            <button onclick="filterRoles('Healthcare')" id="cat-Healthcare" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">Healthcare</button>
+        </div>
 
-                    <div id="answer-box" class="hidden animate-in fade-in duration-500">
-                        <div class="bg-emerald-50 border-l-4 border-emerald-500 p-6 rounded-r-xl">
-                            <h4 class="text-emerald-800 font-bold mb-2 flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Recommended STAR Strategy
-                            </h4>
-                            <p id="answer-text" class="text-emerald-900 leading-relaxed italic text-sm md:text-base"></p>
-                        </div>
-                    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div id="role-grid" class="grid grid-cols-1 gap-3 h-fit max-h-[600px] overflow-y-auto pr-2">
                 </div>
 
-                <div class="mt-12 flex flex-col sm:flex-row gap-4">
-                    <button onclick="toggleAnswer()" id="ans-btn" class="hidden flex-1 bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-700 transition-all shadow-lg">View Answer Strategy</button>
-                    <button onclick="loadQuestion()" id="next-btn" class="hidden flex-1 bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-500 transition-all shadow-lg">Next Question →</button>
+            <div class="lg:col-span-2">
+                <div id="practice-card" class="bg-white rounded-3xl p-8 shadow-xl min-h-[500px] border border-slate-100 flex flex-col justify-between hidden">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-6">
+                            <span id="display-category" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-xs font-bold uppercase"></span>
+                            <span id="display-role" class="bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-xs font-bold"></span>
+                        </div>
+                        
+                        <h2 id="q-text" class="text-2xl font-bold text-slate-800 mb-8 leading-snug"></h2>
+
+                        <div id="ans-box" class="hidden space-y-4">
+                            <div class="bg-emerald-50 p-6 rounded-2xl border-l-4 border-emerald-500">
+                                <h4 class="text-emerald-800 font-bold text-sm uppercase mb-2 italic">Suggested STAR Strategy:</h4>
+                                <p id="ans-text" class="text-slate-700 leading-relaxed"></p>
+                            </div>
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+                                <h4 class="text-amber-800 font-bold text-xs uppercase mb-1">Recommended Certification:</h4>
+                                <p id="cert-text" class="text-amber-900 font-medium text-sm"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex gap-4">
+                        <button onclick="toggleAns()" class="flex-1 bg-slate-800 text-white py-4 rounded-xl font-bold hover:bg-slate-700 transition-all">View Answer</button>
+                        <button onclick="nextQ()" class="flex-1 bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-500 transition-all">Next Question</button>
+                    </div>
+                </div>
+                
+                <div id="empty-state" class="bg-white rounded-3xl p-20 text-center border-2 border-dashed border-slate-200">
+                    <p class="text-slate-400 font-medium">Select a role from the left to start your mock interview.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const data = {
-            "Software Engineer": [
-                { q: "Explain the difference between a process and a thread.", a: "Situation: Discuss a system performance issue. Task: Optimization. Action: Explain that processes have independent memory while threads share memory within a process. Result: Improved concurrency and resource management." },
-                { q: "How do you handle technical debt?", a: "Explain how you document debt as you go, prioritize it in the backlog during sprint planning, and advocate for refactoring 'hot spots' that cause the most bugs." }
-            ],
-            "Data Analyst": [
-                { q: "How do you explain technical findings to non-technical stakeholders?", a: "Focus on the 'So What?' instead of the 'How'. Use visualizations (Tableau/PowerBI) to show trends and translate data into business revenue or cost-saving opportunities." },
-                { q: "What is your process for cleaning a messy dataset?", a: "Outline your steps: handling null values, removing duplicates, normalizing strings, and checking for outliers. Mention using Python (Pandas) or SQL for efficiency." }
-            ],
-            "Product Designer": [
-                { q: "Walk me through your design process.", a: "Mention Empathy (User Research) -> Definition (Pain points) -> Ideation (Sketching) -> Prototyping (Figma) -> Testing. Always link design choices back to user data." },
-                { q: "How do you handle negative feedback on a design you love?", a: "Describe how you separate yourself from the work. Focus on why the feedback was given and how it aligns with project goals to reach a better user outcome." }
-            ],
-            "Digital Marketing": [
-                { q: "A campaign is underperforming. How do you pivot?", a: "Analyze the funnel. Is it a click-through issue (Creative) or conversion issue (Landing Page)? Discuss A/B testing and re-allocating budget to high-performing channels." },
-                { q: "How do you stay updated with changes in SEO or Ad Algorithms?", a: "Mention specific sources like Search Engine Journal or Google’s blog. Explain how you test new updates on a small scale before a full roll-out." }
-            ],
-            "Customer Success": [
-                { q: "How do you handle a high-value client who wants to churn?", a: "First, listen to understand their frustration. Identify if it’s a product gap or a value-perception gap. Create a success plan with clear milestones to regain their trust." },
-                { q: "Describe a time you cross-sold a product to a client.", a: "Explain how you identified a pain point in their current workflow and suggested a feature or tier that solved that specific problem, leading to increased LTV (Lifetime Value)." }
-            ],
-            "Project Manager": [
-                { q: "How do you manage a stakeholder who keeps changing the project scope?", a: "Discuss the 'Impact Analysis'. Show them how changes affect the timeline and budget. Require a formal sign-off for scope changes to maintain accountability." },
-                { q: "Tell me about a time you had to deliver bad news to leadership.", a: "Be direct and come with solutions. Explain the 'Why', the current status, and the 2-3 options available to fix the issue. Never hide the problem." }
-            ]
-        };
+        const rolesData = [
+            // TECH CATEGORY
+            { category: "Tech", role: "Software Engineer", cert: "AWS Certified Developer / Oracle Java Professional", questions: [
+                { q: "How do you ensure your code is scalable?", a: "S: High traffic app. T: Performance optimization. A: Implemented horizontal scaling and caching (Redis). R: Reduced latency by 40%. Why: Discussing stateless architecture shows deep technical maturity." },
+                { q: "Describe a time you solved a complex bug in production.", a: "Focus on your methodology: isolation of variables, checking logs (Datadog/ELK), and implementing a permanent fix rather than a patch." }
+            ]},
+            { category: "Tech", role: "Data Scientist", cert: "Google Professional Data Engineer / Azure AI Associate", questions: [
+                { q: "How do you handle imbalanced datasets?", a: "Explain Oversampling (SMOTE) vs. Undersampling. Discuss why precision-recall is better than accuracy for imbalanced data." }
+            ]},
+            { category: "Tech", role: "Cloud Architect", cert: "AWS Solutions Architect - Professional", questions: [
+                { q: "How do you design for High Availability?", a: "Discuss Multi-AZ deployments, Load Balancers, and Auto-scaling groups to eliminate single points of failure." }
+            ]},
+            { category: "Tech", role: "Cybersecurity Analyst", cert: "CompTIA Security+ / CISSP", questions: [
+                { q: "How would you respond to a detected DDoS attack?", a: "Immediate identification, traffic scrubbing (Cloudflare/AWS Shield), and post-incident analysis to harden firewalls." }
+            ]},
+            { category: "Tech", role: "DevOps Engineer", cert: "Certified Kubernetes Administrator (CKA)", questions: [
+                { q: "What is your process for CI/CD automation?", a: "Mention Jenkins/GitHub Actions. Focus on automated testing gates that prevent broken builds from hitting production." }
+            ]},
 
-        let currentRole = "";
+            // BUSINESS CATEGORY
+            { category: "Business", role: "Project Manager", cert: "PMP (Project Management Professional)", questions: [
+                { q: "How do you handle a team member missing deadlines?", a: "Private 1-on-1 to identify root causes (skill vs. resource). Reset expectations and document a support plan." }
+            ]},
+            { category: "Business", role: "Product Manager", cert: "NPDP (New Product Development Professional)", questions: [
+                { q: "How do you decide what to build next?", a: "Explain the RICE framework (Reach, Impact, Confidence, Effort) to prioritize features based on user data." }
+            ]},
+            { category: "Business", role: "Business Analyst", cert: "CBAP (Certified Business Analysis Professional)", questions: [
+                { q: "How do you manage conflicting requirements from stakeholders?", a: "Facilitate a workshop to align on the 'Primary Business Goal'. Use data to show the trade-offs of each request." }
+            ]},
+            { category: "Business", role: "Marketing Manager", cert: "Google Ads / HubSpot Inbound Certification", questions: [
+                { q: "How do you measure the ROI of a multi-channel campaign?", a: "Discuss attribution models (First-touch vs Multi-touch) and tracking UTMs to see which channel actually drove conversions." }
+            ]},
+            { category: "Business", role: "Customer Success Manager", cert: "Certified Customer Success Manager (CCSM)", questions: [
+                { q: "How do you prevent churn with an unhappy client?", a: "Identify the value-gap. Create a Success Plan with immediate 'Quick Wins' to demonstrate ROI and rebuild trust." }
+            ]},
+
+            // HEALTHCARE CATEGORY
+            { category: "Healthcare", role: "Registered Nurse", cert: "NCLEX-RN / Specialty Certs (CEN, CCRN)", questions: [
+                { q: "How do you handle a patient who is refusing critical treatment?", a: "Listen to their fears without judgment. Educate on the risks of refusal while respecting their autonomy, and involve the family if appropriate." }
+            ]},
+            { category: "Healthcare", role: "Medical Assistant", cert: "CMA (Certified Medical Assistant)", questions: [
+                { q: "How do you ensure accuracy in a high-volume clinical setting?", a: "Strict adherence to protocols, double-checking patient IDs, and maintaining a clean, organized workspace." }
+            ]},
+            { category: "Healthcare", role: "Pharmacist", cert: "PharmD / BCPS (Board Certified)", questions: [
+                { q: "How do you handle a physician prescribing an unsafe dosage?", a: "Verify the dosage, contact the physician professionally to discuss the concern, and suggest a safe alternative based on current guidelines." }
+            ]},
+            { category: "Healthcare", role: "Healthcare Admin", cert: "CPHIMSS (Health Imaging/Management Systems)", questions: [
+                { q: "How do you ensure HIPAA compliance across a department?", a: "Regular staff training, secure digital access controls, and frequent audits of patient data handling procedures." }
+            ]},
+            { category: "Healthcare", role: "Physical Therapist", cert: "OCS (Orthopedic Certified Specialist)", questions: [
+                { q: "How do you motivate a patient who has plateaued?", a: "Re-evaluate goals, introduce new functional tasks, and provide visual progress data to boost their confidence." }
+            ]}
+        ];
+
+        let currentRoleData = null;
         let qIndex = 0;
 
-        function init() {
-            const list = document.getElementById('role-list');
-            Object.keys(data).forEach(role => {
-                const btn = document.createElement('button');
-                btn.className = "role-btn w-full text-left p-4 rounded-xl border-2 border-transparent bg-white shadow-sm transition-all hover:border-blue-300 font-semibold text-slate-700";
-                btn.innerText = role;
-                btn.onclick = () => selectRole(role, btn);
-                list.appendChild(btn);
+        function renderRoles(filter = "All") {
+            const grid = document.getElementById('role-grid');
+            grid.innerHTML = "";
+            const filtered = filter === "All" ? rolesData : rolesData.filter(r => r.category === filter);
+            
+            filtered.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "role-card bg-white p-4 rounded-xl border border-slate-200 cursor-pointer transition-all";
+                div.innerHTML = `
+                    <div class="text-xs font-bold text-blue-600 uppercase mb-1">${item.category}</div>
+                    <div class="font-bold text-slate-800">${item.role}</div>
+                `;
+                div.onclick = () => startPractice(item);
+                grid.appendChild(div);
             });
         }
 
-        function selectRole(role, btn) {
-            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentRole = role;
+        function filterRoles(cat) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            document.getElementById(`cat-${cat}`).classList.add('active-cat');
+            renderRoles(cat);
+        }
+
+        function startPractice(roleObj) {
+            currentRoleData = roleObj;
             qIndex = 0;
-            document.getElementById('next-btn').classList.remove('hidden');
-            document.getElementById('ans-btn').classList.remove('hidden');
-            loadQuestion();
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('practice-card').classList.remove('hidden');
+            showQuestion();
         }
 
-        function loadQuestion() {
-            const questions = data[currentRole];
-            document.getElementById('role-badge').innerText = currentRole;
-            document.getElementById('question-text').innerText = questions[qIndex].q;
-            document.getElementById('answer-text').innerText = questions[qIndex].a;
-            document.getElementById('counter').innerText = `Question ${qIndex + 1}/${questions.length}`;
-            document.getElementById('answer-box').classList.add('hidden');
-            document.getElementById('ans-btn').innerText = "View Answer Strategy";
-            qIndex = (qIndex + 1) % questions.length;
+        function showQuestion() {
+            const qObj = currentRoleData.questions[qIndex];
+            document.getElementById('display-category').innerText = currentRoleData.category;
+            document.getElementById('display-role').innerText = currentRoleData.role;
+            document.getElementById('q-text').innerText = qObj.q;
+            document.getElementById('ans-text').innerText = qObj.a;
+            document.getElementById('cert-text').innerText = currentRoleData.cert;
+            document.getElementById('ans-box').classList.add('hidden');
         }
 
-        function toggleAnswer() {
-            const box = document.getElementById('answer-box');
-            const btn = document.getElementById('ans-btn');
-            box.classList.toggle('hidden');
-            btn.innerText = box.classList.contains('hidden') ? "View Answer Strategy" : "Hide Answer";
+        function nextQ() {
+            qIndex = (qIndex + 1) % currentRoleData.questions.length;
+            showQuestion();
         }
 
-        init();
+        function toggleAns() {
+            document.getElementById('ans-box').classList.toggle('hidden');
+        }
+
+        renderRoles();
     </script>
 </body>
 </html>
