@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Interview Prep Pro</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #10b981;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; max-width: 600px; width: 100%; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary); font-size: 1.5rem; margin-bottom: 5px; }
+        p.subtitle { color: #64748b; margin-bottom: 25px; font-size: 0.9rem; }
+        #question-container { min-height: 120px; margin-bottom: 20px; }
+        #question-text { font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
+        .badge { background: #e2e8f0; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: #475569; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: opacity 0.2s; }
+        .btn-next { background: var(--primary); color: white; }
+        .btn-answer { background: var(--secondary); color: white; }
+        button:hover { opacity: 0.9; }
+        #answer-box { display: none; margin-top: 20px; padding: 20px; background: #ecfdf5; border-left: 4px solid var(--secondary); border-radius: 4px; }
+        .answer-label { font-weight: bold; color: #065f46; display: block; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <span class="badge">Project Manager Edition</span>
+    <h1>Interview Prep Coach</h1>
+    <p class="subtitle">Practice these top questions to ace your next PM role.</p>
+    
+    <div id="question-container">
+        <p id="question-text">Click "Next Question" to begin your practice session.</p>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-next" onclick="showNext()">Next Question</button>
+        <button class="btn-answer" id="answer-btn" onclick="toggleAnswer()" style="display:none;">View Suggested Answer</button>
+    </div>
+
+    <div id="answer-box">
+        <span class="answer-label">Recommended Approach:</span>
+        <div id="answer-text"></div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "How do you prioritize tasks when you have multiple projects with tight deadlines?",
+            a: "Explain your use of the Eisenhower Matrix or MoSCoW method. Emphasize aligning with business value and communicating impact to stakeholders if deadlines must shift."
+        },
+        {
+            q: "Tell me about a project that failed. What did you learn?",
+            a: "Use the STAR method. Don't blame others. Focus on the 'Lesson Learned'—e.g., improving risk assessment or stakeholder alignment earlier in the process."
+        },
+        {
+            q: "How do you handle a team member who isn't meeting their deadlines?",
+            a: "Discuss a private 1-on-1 approach. Identify if it's a skill gap or a resource issue, then collaborate on a performance plan or support structure."
+        },
+        {
+            q: "How do you manage 'scope creep' mid-way through a project?",
+            a: "Mention the change control process. Explain how you evaluate the impact on budget/timeline and present these trade-offs to the client or leadership before agreeing."
+        },
+        {
+            q: "Describe your experience with Agile vs. Waterfall methodologies.",
+            a: "Define both briefly. Explain that Agile is best for iterative growth and Waterfall for fixed-scope requirements, then give an example of one you've used."
+        }
+    ];
+
+    let currentIndex = -1;
+
+    function showNext() {
+        currentIndex = (currentIndex + 1) % questions.length;
+        document.getElementById('question-text').innerText = questions[currentIndex].q;
+        document.getElementById('answer-text').innerText = questions[currentIndex].a;
+        
+        // Reset view
+        document.getElementById('answer-box').style.display = 'none';
+        document.getElementById('answer-btn').style.display = 'block';
+        document.getElementById('answer-btn').innerText = "View Suggested Answer";
+    }
+
+    function toggleAnswer() {
+        const box = document.getElementById('answer-box');
+        const btn = document.getElementById('answer-btn');
+        if (box.style.display === 'none') {
+            box.style.display = 'block';
+            btn.innerText = "Hide Answer";
+        } else {
+            box.style.display = 'none';
+            btn.innerText = "View Suggested Answer";
+        }
+    }
+</script>
+
+</body>
+</html>
