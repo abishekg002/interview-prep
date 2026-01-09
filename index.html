@@ -3,101 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PM Interview Prep Pro</title>
+    <title>PrepAI | Universal Interview Coach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2563eb;
-            --secondary: #10b981;
-            --bg: #f8fafc;
-            --text: #1e293b;
-        }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; max-width: 600px; width: 100%; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); font-size: 1.5rem; margin-bottom: 5px; }
-        p.subtitle { color: #64748b; margin-bottom: 25px; font-size: 0.9rem; }
-        #question-container { min-height: 120px; margin-bottom: 20px; }
-        #question-text { font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
-        .badge { background: #e2e8f0; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: #475569; }
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: opacity 0.2s; }
-        .btn-next { background: var(--primary); color: white; }
-        .btn-answer { background: var(--secondary); color: white; }
-        button:hover { opacity: 0.9; }
-        #answer-box { display: none; margin-top: 20px; padding: 20px; background: #ecfdf5; border-left: 4px solid var(--secondary); border-radius: 4px; }
-        .answer-label { font-weight: bold; color: #065f46; display: block; margin-bottom: 8px; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .role-btn.active { border-color: #2563eb; background-color: #eff6ff; color: #1d4ed8; }
     </style>
 </head>
-<body>
+<body class="min-h-screen p-4 md:p-10">
 
-<div class="card">
-    <span class="badge">Project Manager Edition</span>
-    <h1>Interview Prep Coach</h1>
-    <p class="subtitle">Practice these top questions to ace your next PM role.</p>
-    
-    <div id="question-container">
-        <p id="question-text">Click "Next Question" to begin your practice session.</p>
-    </div>
-
-    <div class="btn-group">
-        <button class="btn-next" onclick="showNext()">Next Question</button>
-        <button class="btn-answer" id="answer-btn" onclick="toggleAnswer()" style="display:none;">View Suggested Answer</button>
-    </div>
-
-    <div id="answer-box">
-        <span class="answer-label">Recommended Approach:</span>
-        <div id="answer-text"></div>
-    </div>
-</div>
-
-<script>
-    const questions = [
-        {
-            q: "How do you prioritize tasks when you have multiple projects with tight deadlines?",
-            a: "Explain your use of the Eisenhower Matrix or MoSCoW method. Emphasize aligning with business value and communicating impact to stakeholders if deadlines must shift."
-        },
-        {
-            q: "Tell me about a project that failed. What did you learn?",
-            a: "Use the STAR method. Don't blame others. Focus on the 'Lesson Learned'—e.g., improving risk assessment or stakeholder alignment earlier in the process."
-        },
-        {
-            q: "How do you handle a team member who isn't meeting their deadlines?",
-            a: "Discuss a private 1-on-1 approach. Identify if it's a skill gap or a resource issue, then collaborate on a performance plan or support structure."
-        },
-        {
-            q: "How do you manage 'scope creep' mid-way through a project?",
-            a: "Mention the change control process. Explain how you evaluate the impact on budget/timeline and present these trade-offs to the client or leadership before agreeing."
-        },
-        {
-            q: "Describe your experience with Agile vs. Waterfall methodologies.",
-            a: "Define both briefly. Explain that Agile is best for iterative growth and Waterfall for fixed-scope requirements, then give an example of one you've used."
-        }
-    ];
-
-    let currentIndex = -1;
-
-    function showNext() {
-        currentIndex = (currentIndex + 1) % questions.length;
-        document.getElementById('question-text').innerText = questions[currentIndex].q;
-        document.getElementById('answer-text').innerText = questions[currentIndex].a;
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         
-        // Reset view
-        document.getElementById('answer-box').style.display = 'none';
-        document.getElementById('answer-btn').style.display = 'block';
-        document.getElementById('answer-btn').innerText = "View Suggested Answer";
-    }
+        <div class="md:col-span-1">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6">Select Your Role</h2>
+            <div id="role-list" class="space-y-2">
+                </div>
+        </div>
 
-    function toggleAnswer() {
-        const box = document.getElementById('answer-box');
-        const btn = document.getElementById('answer-btn');
-        if (box.style.display === 'none') {
-            box.style.display = 'block';
-            btn.innerText = "Hide Answer";
-        } else {
-            box.style.display = 'none';
-            btn.innerText = "View Suggested Answer";
+        <div class="md:col-span-2">
+            <div class="glass-card rounded-3xl shadow-2xl p-8 min-h-[500px] flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-6">
+                        <span id="role-badge" class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Role</span>
+                        <span id="counter" class="text-slate-400 text-sm font-medium">Question 1/5</span>
+                    </div>
+                    
+                    <h1 id="question-text" class="text-2xl md:text-3xl font-bold text-slate-800 leading-tight mb-8">
+                        Select a role to start practicing...
+                    </h1>
+
+                    <div id="answer-box" class="hidden animate-in fade-in duration-500">
+                        <div class="bg-emerald-50 border-l-4 border-emerald-500 p-6 rounded-r-xl">
+                            <h4 class="text-emerald-800 font-bold mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Recommended STAR Strategy
+                            </h4>
+                            <p id="answer-text" class="text-emerald-900 leading-relaxed italic text-sm md:text-base"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 flex flex-col sm:flex-row gap-4">
+                    <button onclick="toggleAnswer()" id="ans-btn" class="hidden flex-1 bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-700 transition-all shadow-lg">View Answer Strategy</button>
+                    <button onclick="loadQuestion()" id="next-btn" class="hidden flex-1 bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-blue-500 transition-all shadow-lg">Next Question →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            "Software Engineer": [
+                { q: "Explain the difference between a process and a thread.", a: "Situation: Discuss a system performance issue. Task: Optimization. Action: Explain that processes have independent memory while threads share memory within a process. Result: Improved concurrency and resource management." },
+                { q: "How do you handle technical debt?", a: "Explain how you document debt as you go, prioritize it in the backlog during sprint planning, and advocate for refactoring 'hot spots' that cause the most bugs." }
+            ],
+            "Data Analyst": [
+                { q: "How do you explain technical findings to non-technical stakeholders?", a: "Focus on the 'So What?' instead of the 'How'. Use visualizations (Tableau/PowerBI) to show trends and translate data into business revenue or cost-saving opportunities." },
+                { q: "What is your process for cleaning a messy dataset?", a: "Outline your steps: handling null values, removing duplicates, normalizing strings, and checking for outliers. Mention using Python (Pandas) or SQL for efficiency." }
+            ],
+            "Product Designer": [
+                { q: "Walk me through your design process.", a: "Mention Empathy (User Research) -> Definition (Pain points) -> Ideation (Sketching) -> Prototyping (Figma) -> Testing. Always link design choices back to user data." },
+                { q: "How do you handle negative feedback on a design you love?", a: "Describe how you separate yourself from the work. Focus on why the feedback was given and how it aligns with project goals to reach a better user outcome." }
+            ],
+            "Digital Marketing": [
+                { q: "A campaign is underperforming. How do you pivot?", a: "Analyze the funnel. Is it a click-through issue (Creative) or conversion issue (Landing Page)? Discuss A/B testing and re-allocating budget to high-performing channels." },
+                { q: "How do you stay updated with changes in SEO or Ad Algorithms?", a: "Mention specific sources like Search Engine Journal or Google’s blog. Explain how you test new updates on a small scale before a full roll-out." }
+            ],
+            "Customer Success": [
+                { q: "How do you handle a high-value client who wants to churn?", a: "First, listen to understand their frustration. Identify if it’s a product gap or a value-perception gap. Create a success plan with clear milestones to regain their trust." },
+                { q: "Describe a time you cross-sold a product to a client.", a: "Explain how you identified a pain point in their current workflow and suggested a feature or tier that solved that specific problem, leading to increased LTV (Lifetime Value)." }
+            ],
+            "Project Manager": [
+                { q: "How do you manage a stakeholder who keeps changing the project scope?", a: "Discuss the 'Impact Analysis'. Show them how changes affect the timeline and budget. Require a formal sign-off for scope changes to maintain accountability." },
+                { q: "Tell me about a time you had to deliver bad news to leadership.", a: "Be direct and come with solutions. Explain the 'Why', the current status, and the 2-3 options available to fix the issue. Never hide the problem." }
+            ]
+        };
+
+        let currentRole = "";
+        let qIndex = 0;
+
+        function init() {
+            const list = document.getElementById('role-list');
+            Object.keys(data).forEach(role => {
+                const btn = document.createElement('button');
+                btn.className = "role-btn w-full text-left p-4 rounded-xl border-2 border-transparent bg-white shadow-sm transition-all hover:border-blue-300 font-semibold text-slate-700";
+                btn.innerText = role;
+                btn.onclick = () => selectRole(role, btn);
+                list.appendChild(btn);
+            });
         }
-    }
-</script>
 
+        function selectRole(role, btn) {
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentRole = role;
+            qIndex = 0;
+            document.getElementById('next-btn').classList.remove('hidden');
+            document.getElementById('ans-btn').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const questions = data[currentRole];
+            document.getElementById('role-badge').innerText = currentRole;
+            document.getElementById('question-text').innerText = questions[qIndex].q;
+            document.getElementById('answer-text').innerText = questions[qIndex].a;
+            document.getElementById('counter').innerText = `Question ${qIndex + 1}/${questions.length}`;
+            document.getElementById('answer-box').classList.add('hidden');
+            document.getElementById('ans-btn').innerText = "View Answer Strategy";
+            qIndex = (qIndex + 1) % questions.length;
+        }
+
+        function toggleAnswer() {
+            const box = document.getElementById('answer-box');
+            const btn = document.getElementById('ans-btn');
+            box.classList.toggle('hidden');
+            btn.innerText = box.classList.contains('hidden') ? "View Answer Strategy" : "Hide Answer";
+        }
+
+        init();
+    </script>
 </body>
 </html>
