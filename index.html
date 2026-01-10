@@ -3,166 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareerPrep Pro | Interview & Certification Guide</title>
+    <title>Interview Prep Pro | 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f4f8; }
-        .active-cat { background: #2563eb !important; color: white !important; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-        .cert-card { background: linear-gradient(135deg, #fff9f0 0%, #fff2e0 100%); border: 1px solid #fed7aa; }
-        .role-btn:hover { transform: translateX(5px); transition: all 0.2s; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
+        .active-cat { background: #2563eb !important; color: white !important; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen py-10 px-4">
+<body class="min-h-screen py-8 px-4">
 
     <div class="max-w-6xl mx-auto">
-        <header class="mb-12">
-            <h1 class="text-3xl font-800 text-slate-900 mb-2">CareerPrep <span class="text-blue-600">Mastery</span></h1>
-            <p class="text-slate-500">Practice top interview questions and discover essential certifications.</p>
+        <header class="mb-10 text-center md:text-left flex justify-between items-end">
+            <div>
+                <h1 class="text-3xl font-800 text-slate-900 tracking-tight">Interview <span class="text-blue-600">Mastery</span></h1>
+                <p class="text-slate-500 font-medium">Smart Practice based on your Spreadsheet.</p>
+            </div>
+            <div id="status-dot" class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-slate-300 animate-pulse"></span> DB LINKED
+            </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <div class="lg:col-span-4 space-y-6">
-                <div class="bg-white p-2 rounded-2xl shadow-sm flex flex-wrap gap-1">
-                    <button onclick="filterRoles('All')" id="cat-All" class="cat-btn active-cat flex-1 py-2 px-4 rounded-xl text-sm font-bold transition-all">All</button>
-                    <button onclick="filterRoles('Construction')" id="cat-Construction" class="cat-btn flex-1 py-2 px-4 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50">Construction</button>
-                    <button onclick="filterRoles('Tech')" id="cat-Tech" class="cat-btn flex-1 py-2 px-4 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50">Tech</button>
-                </div>
+        <div id="category-bar" class="flex flex-wrap gap-2 mb-8 justify-center md:justify-start">
+            </div>
 
-                <div id="role-grid" class="space-y-2 max-h-[500px] overflow-y-auto pr-2">
-                    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-4 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-fit">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Select Role</h3>
+                <div id="role-list" class="space-y-1 max-h-[500px] overflow-y-auto custom-scroll">
+                    <p class="text-slate-400 italic text-sm">Waiting for Google Sheets...</p>
+                </div>
             </div>
 
             <div class="lg:col-span-8">
-                <div id="display-panel" class="hidden space-y-6">
-                    
-                    <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                <div id="practice-panel" class="hidden space-y-6">
+                    <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 min-h-[480px] flex flex-col justify-between">
                         <div>
-                            <span id="disp-cat" class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1"></span>
-                            <h2 id="disp-role" class="text-xl font-bold text-slate-800"></h2>
-                        </div>
-                        <div class="text-right">
-                            <span id="counter" class="text-xs font-bold text-slate-400">Question 1/5</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-50">
-                        <h3 id="disp-q" class="text-2xl font-bold text-slate-800 leading-snug mb-8"></h3>
-                        
-                        <div id="ans-area" class="hidden space-y-6">
-                            <div class="bg-slate-50 p-6 rounded-2xl border-l-4 border-blue-500">
-                                <h4 class="text-blue-600 font-bold text-xs uppercase mb-3">Expert Answer Strategy (STAR)</h4>
-                                <p id="disp-a" class="text-slate-700 leading-relaxed"></p>
+                            <div class="flex justify-between items-center mb-8">
+                                <span id="disp-role-badge" class="bg-slate-900 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest"></span>
+                                <span id="q-counter" class="text-xs font-bold text-slate-300 tracking-widest uppercase"></span>
+                            </div>
+                            <h2 id="disp-question" class="text-2xl md:text-3xl font-800 text-slate-800 leading-tight mb-10"></h2>
+                            
+                            <div id="answer-box" class="hidden">
+                                <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-xl">
+                                    <h4 class="text-blue-700 font-bold text-xs uppercase mb-2 tracking-widest">Suggested Answer Strategy</h4>
+                                    <p id="disp-answer" class="text-slate-700 leading-relaxed italic"></p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="mt-8 flex gap-3">
-                            <button onclick="toggleAns()" id="ans-btn" class="flex-1 bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition-all">Show Strategy</button>
-                            <button onclick="nextQ()" class="flex-1 bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-500">Next Question</button>
+                        <div class="flex flex-col sm:flex-row gap-4 mt-12">
+                            <button onclick="toggleAnswer()" id="ans-btn" class="flex-1 bg-slate-100 text-slate-800 py-4 rounded-2xl font-bold hover:bg-slate-200 transition-all border border-slate-200">Show Strategy</button>
+                            <button onclick="nextQuestion()" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-500 shadow-lg shadow-blue-200">Next Question →</button>
                         </div>
                     </div>
 
-                    <div class="cert-card p-6 rounded-2xl flex items-start gap-4 shadow-sm">
-                        <div class="bg-orange-100 p-3 rounded-xl text-2xl">🎓</div>
+                    <div class="bg-white border-2 border-amber-100 p-6 rounded-3xl flex items-center gap-6 shadow-sm">
+                        <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl shadow-inner">🎓</div>
                         <div>
-                            <h4 class="text-orange-800 font-bold text-sm uppercase tracking-wider mb-1">Required Certification for this Role</h4>
-                            <p id="disp-cert" class="text-orange-950 font-extrabold text-lg leading-tight"></p>
-                            <p class="text-orange-700 text-xs mt-2 font-medium">Industry standard as of 2026. This credential increases hiring chances by ~40%.</p>
+                            <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Recommended Certification</p>
+                            <h4 id="disp-cert" class="text-xl font-bold text-slate-800 leading-tight"></h4>
                         </div>
                     </div>
-
                 </div>
 
-                <div id="welcome" class="bg-white rounded-[2rem] p-20 text-center border-2 border-dashed border-slate-200">
-                    <p class="text-slate-400 font-bold">Pick a role to view questions and certifications.</p>
+                <div id="welcome-screen" class="bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200 p-20 text-center">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 bg-white rounded-full text-2xl shadow-sm">🚀</div>
+                    <p class="text-slate-500 font-bold text-lg">Pick a role to start your practice session.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const data = [
-            { 
-                category: "Construction", 
-                role: "Site Supervisor", 
-                cert: "OSHA 30-Hour Construction Safety Certification",
-                questions: [
-                    { q: "How do you handle a subcontractor who is falling behind the project schedule?", a: "Explain your process for re-sequencing tasks. Detail how you use daily stand-ups to identify labor shortages and adjust the critical path without compromising the finish date." },
-                    { q: "What's your method for conducting a safety 'toolbox talk'?", a: "Discuss focus on high-risk activities of the day. Mention documented attendance and verifying PPE for every specific trade present." },
-                    { q: "How do you manage quality control for a concrete pour?", a: "Detail pre-pour checklists: rebar placement, formwork integrity, and moisture barriers. Mention slump test verification." },
-                    { q: "Describe a time you resolved a conflict between two trades.", a: "Focus on neutral mediation. Show how you used project drawings to clarify boundaries and schedule priority." },
-                    { q: "How do you handle client-requested changes mid-build?", a: "Emphasize the Change Order process. Never proceed without written approval and a clear explanation of budget/time impacts." }
-                ]
-            },
-            { 
-                category: "Tech", 
-                role: "Cybersecurity Analyst", 
-                cert: "CISSP (Certified Information Systems Security Professional)",
-                questions: [
-                    { q: "How would you respond to a suspected SQL injection attack?", a: "Discuss immediate isolation of the affected server, log analysis to find the source, and implementing parameterized queries as a permanent fix." },
-                    { q: "Explain the concept of 'Zero Trust' architecture.", a: "Focus on 'Never Trust, Always Verify'. Explain that identity is the new perimeter, regardless of where the user is logging in from." },
-                    { q: "How do you stay ahead of Zero-Day vulnerabilities?", a: "Mention threat intelligence feeds, automated patching cycles, and participating in bug bounty communities." },
-                    { q: "Describe a time you had to explain a security risk to a non-technical CEO.", a: "Translate the risk into business impact (money lost, reputation damage) rather than technical jargon." },
-                    { q: "What is your process for incident post-mortems?", a: "Focus on Root Cause Analysis (RCA). Discuss how you document the timeline and implement safeguards to ensure the same breach never happens twice." }
-                ]
+        // PASTE YOUR GOOGLE SHEET CSV LINK HERE
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsCBf6RM1KTWmT9Fzr9ABS3_08fVIYKEX5UbUlufi4DnIA9sb0zcRa0W49cb76yetcWXGGPtI9x21u/pub?gid=327169888&single=true&output=csv";
+
+        let allData = [];
+        let currentQuestions = [];
+        let currentIdx = 0;
+
+        // Fetch Data
+        Papa.parse(SHEET_URL, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                // Filter out empty rows and link to your exact headers
+                allData = results.data.filter(row => row.Role && row.Category);
+                document.getElementById('status-dot').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> LIVE SYNC';
+                initApp();
             }
-            // Add more roles here following the same structure...
-        ];
+        });
 
-        let activeRole = null;
-        let qIdx = 0;
+        function initApp() {
+            const categories = ["All", ...new Set(allData.map(item => item.Category))];
+            const catBar = document.getElementById('category-bar');
+            
+            catBar.innerHTML = categories.map(cat => 
+                `<button onclick="filterByCategory('${cat}')" id="btn-${cat.replace(/\s/g, '')}" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-xl font-bold text-sm text-slate-600 hover:border-blue-400 transition-all">${cat}</button>`
+            ).join('');
 
-        function renderRoles(filter = "All") {
-            const grid = document.getElementById('role-grid');
-            grid.innerHTML = "";
-            const filtered = filter === "All" ? data : data.filter(r => r.category === filter);
-            filtered.forEach(item => {
-                const b = document.createElement('button');
-                b.className = "role-btn w-full text-left p-4 rounded-xl bg-white border border-slate-100 shadow-sm font-bold text-slate-700 hover:shadow-md transition-all";
-                b.innerText = item.role;
-                b.onclick = () => {
-                    activeRole = item;
-                    qIdx = 0;
-                    document.getElementById('welcome').classList.add('hidden');
-                    document.getElementById('display-panel').classList.remove('hidden');
-                    show();
-                };
-                grid.appendChild(b);
-            });
+            filterByCategory("All");
         }
 
-        function filterRoles(cat) {
+        function filterByCategory(cat) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
-            document.getElementById(`cat-${cat}`).classList.add('active-cat');
-            renderRoles(cat);
+            const btn = document.getElementById(`btn-${cat.replace(/\s/g, '')}`);
+            if(btn) btn.classList.add('active-cat');
+
+            const roleList = document.getElementById('role-list');
+            const filteredData = cat === "All" ? allData : allData.filter(d => d.Category === cat);
+            const uniqueRoles = [...new Set(filteredData.map(d => d.Role))];
+            
+            roleList.innerHTML = uniqueRoles.map(role => `
+                <button onclick="startInterview('${role}')" class="w-full text-left p-4 rounded-xl font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all mb-1">
+                    ${role}
+                </button>
+            `).join('');
         }
 
-        function show() {
-            const q = activeRole.questions[qIdx];
-            document.getElementById('disp-cat').innerText = activeRole.category;
-            document.getElementById('disp-role').innerText = activeRole.role;
-            document.getElementById('disp-q').innerText = q.q;
-            document.getElementById('disp-a').innerText = q.a;
-            document.getElementById('disp-cert').innerText = activeRole.cert;
-            document.getElementById('counter').innerText = `Question ${qIdx + 1}/5`;
-            document.getElementById('ans-area').classList.add('hidden');
+        function startInterview(roleName) {
+            currentQuestions = allData.filter(d => d.Role === roleName);
+            currentIdx = 0;
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('practice-panel').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const data = currentQuestions[currentIdx];
+            document.getElementById('disp-role-badge').innerText = data.Role;
+            document.getElementById('disp-question').innerText = data.Question;
+            
+            // USING YOUR SPECIFIC HEADERS HERE
+            document.getElementById('disp-answer').innerText = data["Suggested Answer Strategy"];
+            document.getElementById('disp-cert').innerText = data["Recommended Certificate"] || "N/A";
+            
+            document.getElementById('q-counter').innerText = `Question ${currentIdx + 1} / ${currentQuestions.length}`;
+            document.getElementById('answer-box').classList.add('hidden');
             document.getElementById('ans-btn').innerText = "Show Strategy";
         }
 
-        function nextQ() {
-            qIdx = (qIdx + 1) % 5;
-            show();
+        function nextQuestion() {
+            currentIdx = (currentIdx + 1) % currentQuestions.length;
+            showQuestion();
         }
 
-        function toggleAns() {
-            const area = document.getElementById('ans-area');
+        function toggleAnswer() {
+            const box = document.getElementById('answer-box');
             const btn = document.getElementById('ans-btn');
-            area.classList.toggle('hidden');
-            btn.innerText = area.classList.contains('hidden') ? "Show Strategy" : "Hide Strategy";
+            box.classList.toggle('hidden');
+            btn.innerText = box.classList.contains('hidden') ? "Show Strategy" : "Hide Strategy";
         }
-
-        renderRoles();
     </script>
 </body>
 </html>
