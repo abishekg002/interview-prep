@@ -3,140 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareerPrep 2026 | Professional Interview Coach</title>
+    <title>GlobalPrep | Construction & Professional Interview Coach</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .active-cat { background-color: #2563eb !important; color: white !important; }
-        .role-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .active-cat { background-color: #0f172a !important; color: white !important; transform: scale(1.05); }
+        .role-btn:hover { border-color: #3b82f6; background-color: #eff6ff; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen py-10 px-4">
+<body class="min-h-screen py-8 px-4">
 
     <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold text-slate-900 mb-2">Interview Mastery Coach</h1>
-            <p class="text-slate-600">Select a category and role to begin your specialized practice.</p>
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-3">Interview Coach <span class="text-blue-600">Pro</span></h1>
+            <p class="text-slate-500 font-medium">Master your interview with role-specific STAR strategies.</p>
+        </header>
+
+        <div class="flex flex-wrap justify-center gap-3 mb-10">
+            <button onclick="filterRoles('All')" id="cat-All" class="cat-btn active-cat bg-white shadow-sm border border-slate-200 px-6 py-2.5 rounded-2xl font-bold transition-all">All Roles</button>
+            <button onclick="filterRoles('Construction')" id="cat-Construction" class="cat-btn bg-white shadow-sm border border-slate-200 px-6 py-2.5 rounded-2xl font-bold transition-all text-slate-600">Construction</button>
+            <button onclick="filterRoles('Tech')" id="cat-Tech" class="cat-btn bg-white shadow-sm border border-slate-200 px-6 py-2.5 rounded-2xl font-bold transition-all text-slate-600">Technology</button>
+            <button onclick="filterRoles('Business')" id="cat-Business" class="cat-btn bg-white shadow-sm border border-slate-200 px-6 py-2.5 rounded-2xl font-bold transition-all text-slate-600">Business</button>
         </div>
 
-        <div class="flex justify-center gap-4 mb-8">
-            <button onclick="filterRoles('All')" id="cat-All" class="cat-btn active-cat bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">All</button>
-            <button onclick="filterRoles('Tech')" id="cat-Tech" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">Technology</button>
-            <button onclick="filterRoles('Business')" id="cat-Business" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">Business</button>
-            <button onclick="filterRoles('Healthcare')" id="cat-Healthcare" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-full font-semibold transition-all">Healthcare</button>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-4 bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Select Job Role</h3>
+                <div id="role-grid" class="space-y-2 max-h-[500px] overflow-y-auto custom-scroll pr-2">
+                    </div>
+            </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div id="role-grid" class="grid grid-cols-1 gap-3 h-fit max-h-[600px] overflow-y-auto pr-2">
-                </div>
-
-            <div class="lg:col-span-2">
-                <div id="practice-card" class="bg-white rounded-3xl p-8 shadow-xl min-h-[500px] border border-slate-100 flex flex-col justify-between hidden">
+            <div class="lg:col-span-8">
+                <div id="main-panel" class="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[550px] flex flex-col justify-between hidden">
                     <div>
-                        <div class="flex flex-wrap items-center gap-2 mb-6">
-                            <span id="display-category" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-xs font-bold uppercase"></span>
-                            <span id="display-role" class="bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-xs font-bold"></span>
+                        <div class="flex flex-wrap items-center gap-3 mb-8">
+                            <span id="disp-cat" class="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider"></span>
+                            <span id="disp-role" class="bg-slate-900 text-white px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider"></span>
                         </div>
                         
-                        <h2 id="q-text" class="text-2xl font-bold text-slate-800 mb-8 leading-snug"></h2>
+                        <h2 id="disp-q" class="text-2xl md:text-3xl font-extrabold text-slate-800 leading-tight mb-10"></h2>
 
-                        <div id="ans-box" class="hidden space-y-4">
-                            <div class="bg-emerald-50 p-6 rounded-2xl border-l-4 border-emerald-500">
-                                <h4 class="text-emerald-800 font-bold text-sm uppercase mb-2 italic">Suggested STAR Strategy:</h4>
-                                <p id="ans-text" class="text-slate-700 leading-relaxed"></p>
-                            </div>
-                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
-                                <h4 class="text-amber-800 font-bold text-xs uppercase mb-1">Recommended Certification:</h4>
-                                <p id="cert-text" class="text-amber-900 font-medium text-sm"></p>
+                        <div id="ans-area" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div class="bg-slate-50 p-6 md:p-8 rounded-[1.5rem] border border-slate-100 relative">
+                                <span class="absolute -top-3 left-6 bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">STAR Strategy</span>
+                                <p id="disp-a" class="text-slate-700 leading-relaxed text-lg mb-6"></p>
+                                
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-4">
+                                    <div class="bg-amber-100 p-2 rounded-lg">🏆</div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">Recommended Cert</p>
+                                        <p id="disp-cert" class="text-slate-800 font-bold text-sm"></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-8 flex gap-4">
-                        <button onclick="toggleAns()" class="flex-1 bg-slate-800 text-white py-4 rounded-xl font-bold hover:bg-slate-700 transition-all">View Answer</button>
-                        <button onclick="nextQ()" class="flex-1 bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-500 transition-all">Next Question</button>
+                    <div class="mt-12 flex flex-col sm:flex-row gap-4">
+                        <button onclick="toggleAns()" id="ans-trigger" class="flex-1 bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">Show Strategy</button>
+                        <button onclick="nextQ()" class="flex-1 bg-blue-600 text-white py-5 rounded-2xl font-bold text-lg hover:bg-blue-500 transition-all shadow-lg shadow-blue-200">Next Question →</button>
                     </div>
                 </div>
-                
-                <div id="empty-state" class="bg-white rounded-3xl p-20 text-center border-2 border-dashed border-slate-200">
-                    <p class="text-slate-400 font-medium">Select a role from the left to start your mock interview.</p>
+
+                <div id="empty-state" class="bg-slate-100 rounded-[2rem] border-4 border-dashed border-slate-200 p-20 text-center">
+                    <div class="text-6xl mb-6">👷‍♂️</div>
+                    <h3 class="text-xl font-bold text-slate-400">Select a role to begin your practice</h3>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const rolesData = [
-            // TECH CATEGORY
-            { category: "Tech", role: "Software Engineer", cert: "AWS Certified Developer / Oracle Java Professional", questions: [
-                { q: "How do you ensure your code is scalable?", a: "S: High traffic app. T: Performance optimization. A: Implemented horizontal scaling and caching (Redis). R: Reduced latency by 40%. Why: Discussing stateless architecture shows deep technical maturity." },
-                { q: "Describe a time you solved a complex bug in production.", a: "Focus on your methodology: isolation of variables, checking logs (Datadog/ELK), and implementing a permanent fix rather than a patch." }
-            ]},
-            { category: "Tech", role: "Data Scientist", cert: "Google Professional Data Engineer / Azure AI Associate", questions: [
-                { q: "How do you handle imbalanced datasets?", a: "Explain Oversampling (SMOTE) vs. Undersampling. Discuss why precision-recall is better than accuracy for imbalanced data." }
-            ]},
-            { category: "Tech", role: "Cloud Architect", cert: "AWS Solutions Architect - Professional", questions: [
-                { q: "How do you design for High Availability?", a: "Discuss Multi-AZ deployments, Load Balancers, and Auto-scaling groups to eliminate single points of failure." }
-            ]},
-            { category: "Tech", role: "Cybersecurity Analyst", cert: "CompTIA Security+ / CISSP", questions: [
-                { q: "How would you respond to a detected DDoS attack?", a: "Immediate identification, traffic scrubbing (Cloudflare/AWS Shield), and post-incident analysis to harden firewalls." }
-            ]},
-            { category: "Tech", role: "DevOps Engineer", cert: "Certified Kubernetes Administrator (CKA)", questions: [
-                { q: "What is your process for CI/CD automation?", a: "Mention Jenkins/GitHub Actions. Focus on automated testing gates that prevent broken builds from hitting production." }
-            ]},
-
-            // BUSINESS CATEGORY
-            { category: "Business", role: "Project Manager", cert: "PMP (Project Management Professional)", questions: [
-                { q: "How do you handle a team member missing deadlines?", a: "Private 1-on-1 to identify root causes (skill vs. resource). Reset expectations and document a support plan." }
-            ]},
-            { category: "Business", role: "Product Manager", cert: "NPDP (New Product Development Professional)", questions: [
-                { q: "How do you decide what to build next?", a: "Explain the RICE framework (Reach, Impact, Confidence, Effort) to prioritize features based on user data." }
-            ]},
-            { category: "Business", role: "Business Analyst", cert: "CBAP (Certified Business Analysis Professional)", questions: [
-                { q: "How do you manage conflicting requirements from stakeholders?", a: "Facilitate a workshop to align on the 'Primary Business Goal'. Use data to show the trade-offs of each request." }
-            ]},
-            { category: "Business", role: "Marketing Manager", cert: "Google Ads / HubSpot Inbound Certification", questions: [
-                { q: "How do you measure the ROI of a multi-channel campaign?", a: "Discuss attribution models (First-touch vs Multi-touch) and tracking UTMs to see which channel actually drove conversions." }
-            ]},
-            { category: "Business", role: "Customer Success Manager", cert: "Certified Customer Success Manager (CCSM)", questions: [
-                { q: "How do you prevent churn with an unhappy client?", a: "Identify the value-gap. Create a Success Plan with immediate 'Quick Wins' to demonstrate ROI and rebuild trust." }
-            ]},
-
-            // HEALTHCARE CATEGORY
-            { category: "Healthcare", role: "Registered Nurse", cert: "NCLEX-RN / Specialty Certs (CEN, CCRN)", questions: [
-                { q: "How do you handle a patient who is refusing critical treatment?", a: "Listen to their fears without judgment. Educate on the risks of refusal while respecting their autonomy, and involve the family if appropriate." }
-            ]},
-            { category: "Healthcare", role: "Medical Assistant", cert: "CMA (Certified Medical Assistant)", questions: [
-                { q: "How do you ensure accuracy in a high-volume clinical setting?", a: "Strict adherence to protocols, double-checking patient IDs, and maintaining a clean, organized workspace." }
-            ]},
-            { category: "Healthcare", role: "Pharmacist", cert: "PharmD / BCPS (Board Certified)", questions: [
-                { q: "How do you handle a physician prescribing an unsafe dosage?", a: "Verify the dosage, contact the physician professionally to discuss the concern, and suggest a safe alternative based on current guidelines." }
-            ]},
-            { category: "Healthcare", role: "Healthcare Admin", cert: "CPHIMSS (Health Imaging/Management Systems)", questions: [
-                { q: "How do you ensure HIPAA compliance across a department?", a: "Regular staff training, secure digital access controls, and frequent audits of patient data handling procedures." }
-            ]},
-            { category: "Healthcare", role: "Physical Therapist", cert: "OCS (Orthopedic Certified Specialist)", questions: [
-                { q: "How do you motivate a patient who has plateaued?", a: "Re-evaluate goals, introduce new functional tasks, and provide visual progress data to boost their confidence." }
-            ]}
+        const data = [
+            // CONSTRUCTION CATEGORY
+            { 
+                category: "Construction", 
+                role: "Site Supervisor", 
+                cert: "OSHA 30-Hour Construction Safety",
+                questions: [
+                    { q: "How do you handle a subcontractor who is falling behind the project schedule?", a: "S: Critical phase of build. T: Subcontractor missed 3 milestones. A: Held a site meeting to identify labor shortages and re-sequenced tasks to avoid critical path delays. R: Finished on time. Focus: Accountability and schedule logic." },
+                    { q: "Describe your process for conducting a morning safety briefing.", a: "Briefings should cover the day's specific hazards, PPE requirements, and a check of equipment. Emphasize a 'zero-incident' culture." },
+                    { q: "How do you manage a conflict between two different trades on-site?", a: "Act as a neutral mediator. Reference the project drawings and schedule to determine priority and space allocation." },
+                    { q: "What is your approach to quality control for concrete pours?", a: "Detail pre-pour inspections (rebar, forms), monitoring slump tests, and ensuring proper curing procedures are followed." },
+                    { q: "How do you handle a client who requests a change mid-construction?", a: "Document the request, explain the cost/time impact via a Change Order, and wait for written approval before proceeding." }
+                ]
+            },
+            { 
+                category: "Construction", 
+                role: "Civil Engineer", 
+                cert: "Professional Engineer (PE) License",
+                questions: [
+                    { q: "How do you handle a significant design flaw found during the construction phase?", a: "S: Bridge project. T: Rebar spacing error. A: Issued an RFI (Request for Info), calculated a structural workaround, and coordinated with the architect. R: Corrected without safety risk." },
+                    { q: "What software do you prioritize for project modeling and why?", a: "Discuss AutoCAD, Civil 3D, or Revit. Focus on how these tools improve accuracy and stakeholder visualization." },
+                    { q: "Explain your experience with environmental impact assessments.", a: "Discuss managing runoff, soil erosion, and local wildlife protection during the site development phase." },
+                    { q: "How do you ensure structural integrity in high-seismic zones?", a: "Mention specific codes (ASCE 7) and use of ductile detailing or base isolation techniques." },
+                    { q: "How do you balance cost-efficiency with long-term durability?", a: "Life-cycle cost analysis. Choosing materials that might be 10% more expensive now but last 30% longer with less maintenance." }
+                ]
+            },
+            { 
+                category: "Construction", 
+                role: "Electrician", 
+                cert: "Journeyman or Master Electrician License",
+                questions: [
+                    { q: "Describe a time you had to troubleshoot a complex circuit failure.", a: "Discuss the logical isolation of variables. Start at the panel, check continuity, and use a multimeter to find the ground fault or short." },
+                    { q: "How do you stay compliant with the latest NEC (National Electrical Code) updates?", a: "Mention regular continuing education and how you apply recent changes (like AFCI/GFCI requirements) to new installs." },
+                    { q: "What safety precautions do you take when working on live panels?", a: "Emphasize LOTO (Lockout/Tagout) procedures and the use of rated Arc Flash PPE as a last resort." },
+                    { q: "How do you coordinate wiring with HVAC and plumbing teams?", a: "Reference 'clash detection' in BIM models or site meetings to ensure electrical runs don't interfere with ducting." },
+                    { q: "Explain how you calculate load requirements for a commercial upgrade.", a: "Detail summing the volt-amperes for all equipment and applying appropriate demand factors per code." }
+                ]
+            },
+            { 
+                category: "Construction", 
+                role: "Safety Officer", 
+                cert: "CSP (Certified Safety Professional)",
+                questions: [
+                    { q: "How do you react if you see a worker not wearing a harness at heights?", a: "Immediate work stoppage. Address the worker directly, correct the behavior, and document the violation for training purposes." },
+                    { q: "How do you manage an OSHA site inspection?", a: "Be professional, provide requested documentation (logs 300), and accompany the inspector throughout the site." },
+                    { q: "What is the most effective way to reduce 'slips, trips, and falls' on a project?", a: "Focus on housekeeping, clear signage, and ensuring all walking/working surfaces are illuminated and dry." },
+                    { q: "How do you handle a manager who wants to bypass safety to meet a deadline?", a: "Explain that an injury or site shutdown is a greater delay. Use data to show that safe sites are more productive." },
+                    { q: "Describe your experience with accident investigation.", a: "Root Cause Analysis (RCA). Moving beyond 'human error' to find systemic failures in training or equipment." }
+                ]
+            },
+            { 
+                category: "Construction", 
+                role: "Project Estimator", 
+                cert: "CEP (Certified Estimating Professional)",
+                questions: [
+                    { q: "How do you ensure accuracy in a multi-million dollar bid?", a: "Breakdown into WBS (Work Breakdown Structure). Double-count takeoffs and get current quotes from at least three vendors per category." },
+                    { q: "How do you handle fluctuating material costs (like steel or lumber)?", a: "Include escalation clauses in contracts or recommend 'pre-purchasing' materials to lock in today's price." },
+                    { q: "What is your process for analyzing subcontractor bids?", a: "Scope leveling. Ensure every sub is quoting the exact same work so you aren't comparing 'apples to oranges'." },
+                    { q: "How do you account for 'unforeseen conditions' in an estimate?", a: "Use a contingency percentage based on the project risk profile (e.g., 5% for new build, 15% for renovation)." },
+                    { q: "How do you utilize BIM for cost estimating (5D BIM)?", a: "Extracting quantities directly from the 3D model to reduce human error in manual takeoffs." }
+                ]
+            }
+            // (Note: Other categories Tech/Business would follow the same 5-question structure)
         ];
 
-        let currentRoleData = null;
+        let currentRole = null;
         let qIndex = 0;
 
         function renderRoles(filter = "All") {
             const grid = document.getElementById('role-grid');
             grid.innerHTML = "";
-            const filtered = filter === "All" ? rolesData : rolesData.filter(r => r.category === filter);
+            const filtered = filter === "All" ? data : data.filter(r => r.category === filter);
             
             filtered.forEach(item => {
-                const div = document.createElement('div');
-                div.className = "role-card bg-white p-4 rounded-xl border border-slate-200 cursor-pointer transition-all";
-                div.innerHTML = `
-                    <div class="text-xs font-bold text-blue-600 uppercase mb-1">${item.category}</div>
-                    <div class="font-bold text-slate-800">${item.role}</div>
+                const btn = document.createElement('button');
+                btn.className = "role-btn w-full text-left p-4 rounded-2xl border border-slate-200 bg-white transition-all flex justify-between items-center group";
+                btn.innerHTML = `
+                    <div>
+                        <p class="text-[10px] font-black text-blue-500 uppercase tracking-tighter">${item.category}</p>
+                        <p class="font-bold text-slate-700">${item.role}</p>
+                    </div>
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 `;
-                div.onclick = () => startPractice(item);
-                grid.appendChild(div);
+                btn.onclick = () => start(item);
+                grid.appendChild(btn);
             });
         }
 
@@ -146,31 +171,35 @@
             renderRoles(cat);
         }
 
-        function startPractice(roleObj) {
-            currentRoleData = roleObj;
+        function start(roleObj) {
+            currentRole = roleObj;
             qIndex = 0;
             document.getElementById('empty-state').classList.add('hidden');
-            document.getElementById('practice-card').classList.remove('hidden');
-            showQuestion();
+            document.getElementById('main-panel').classList.remove('hidden');
+            show();
         }
 
-        function showQuestion() {
-            const qObj = currentRoleData.questions[qIndex];
-            document.getElementById('display-category').innerText = currentRoleData.category;
-            document.getElementById('display-role').innerText = currentRoleData.role;
-            document.getElementById('q-text').innerText = qObj.q;
-            document.getElementById('ans-text').innerText = qObj.a;
-            document.getElementById('cert-text').innerText = currentRoleData.cert;
-            document.getElementById('ans-box').classList.add('hidden');
+        function show() {
+            const q = currentRole.questions[qIndex];
+            document.getElementById('disp-cat').innerText = currentRole.category;
+            document.getElementById('disp-role').innerText = currentRole.role;
+            document.getElementById('disp-q').innerText = q.q;
+            document.getElementById('disp-a').innerText = q.a;
+            document.getElementById('disp-cert').innerText = currentRole.cert;
+            document.getElementById('ans-area').classList.add('hidden');
+            document.getElementById('ans-trigger').innerText = "Show Strategy";
         }
 
         function nextQ() {
-            qIndex = (qIndex + 1) % currentRoleData.questions.length;
-            showQuestion();
+            qIndex = (qIndex + 1) % currentRole.questions.length;
+            show();
         }
 
         function toggleAns() {
-            document.getElementById('ans-box').classList.toggle('hidden');
+            const area = document.getElementById('ans-area');
+            const btn = document.getElementById('ans-trigger');
+            area.classList.toggle('hidden');
+            btn.innerText = area.classList.contains('hidden') ? "Show Strategy" : "Hide Strategy";
         }
 
         renderRoles();
