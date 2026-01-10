@@ -3,98 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Prep Pro | 2026</title>
+    <title>Interview Mastery | Mobile Optimized</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
         .active-cat { background: #2563eb !important; color: white !important; }
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        /* Smooth transitions for mobile elements */
+        .mobile-dropdown { transition: all 0.3s ease; }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4">
+<body class="min-h-screen bg-slate-50">
 
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-10 text-center md:text-left flex justify-between items-end">
+    <div class="max-w-4xl mx-auto px-4 py-6 md:py-10">
+        <header class="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-800 text-slate-900 tracking-tight">Interview <span class="text-blue-600">Mastery</span></h1>
-                <p class="text-slate-500 font-medium">Smart Practice based on your Spreadsheet.</p>
+                <h1 class="text-2xl md:text-3xl font-800 text-slate-900 tracking-tight">Interview <span class="text-blue-600">Mastery</span></h1>
+                <p class="text-slate-500 text-sm font-medium">Ace your interview with data-driven prep.</p>
             </div>
-            <div id="status-dot" class="flex items-center gap-2 text-xs font-bold text-slate-400">
-                <span class="w-2 h-2 rounded-full bg-slate-300 animate-pulse"></span> DB LINKED
+            <div id="status-dot" class="flex items-center gap-2 text-[10px] font-black text-slate-400 bg-white px-3 py-1 rounded-full shadow-sm w-fit">
+                <span class="w-2 h-2 rounded-full bg-slate-300 animate-pulse"></span> SYNCING...
             </div>
         </header>
 
-        <div id="category-bar" class="flex flex-wrap gap-2 mb-8 justify-center md:justify-start">
+        <div id="category-bar" class="flex overflow-x-auto gap-2 mb-6 pb-2 no-scrollbar">
             </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-4 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-fit">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Select Role</h3>
-                <div id="role-list" class="space-y-1 max-h-[500px] overflow-y-auto custom-scroll">
-                    <p class="text-slate-400 italic text-sm">Waiting for Google Sheets...</p>
-                </div>
-            </div>
+        <div class="mb-8">
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Select Job Role</label>
+            <select id="role-dropdown" onchange="startInterview(this.value)" class="w-full p-4 rounded-2xl border-2 border-white bg-white shadow-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none appearance-none cursor-pointer">
+                <option value="">Choose a role...</option>
+            </select>
+        </div>
 
-            <div class="lg:col-span-8">
-                <div id="practice-panel" class="hidden space-y-6">
-                    <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 min-h-[480px] flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-center mb-8">
-                                <span id="disp-role-badge" class="bg-slate-900 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest"></span>
-                                <span id="q-counter" class="text-xs font-bold text-slate-300 tracking-widest uppercase"></span>
-                            </div>
-                            <h2 id="disp-question" class="text-2xl md:text-3xl font-800 text-slate-800 leading-tight mb-10"></h2>
-                            
-                            <div id="answer-box" class="hidden">
-                                <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-xl">
-                                    <h4 class="text-blue-700 font-bold text-xs uppercase mb-2 tracking-widest">Suggested Answer Strategy</h4>
-                                    <p id="disp-answer" class="text-slate-700 leading-relaxed italic"></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row gap-4 mt-12">
-                            <button onclick="toggleAnswer()" id="ans-btn" class="flex-1 bg-slate-100 text-slate-800 py-4 rounded-2xl font-bold hover:bg-slate-200 transition-all border border-slate-200">Show Strategy</button>
-                            <button onclick="nextQuestion()" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-500 shadow-lg shadow-blue-200">Next Question →</button>
-                        </div>
+        <div id="practice-panel" class="hidden space-y-4">
+            <div class="bg-white p-6 md:p-10 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-white flex flex-col justify-between min-h-[400px]">
+                <div>
+                    <div class="flex justify-between items-center mb-6">
+                        <span id="disp-role-badge" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest"></span>
+                        <span id="q-counter" class="text-[10px] font-bold text-slate-300 tracking-widest uppercase"></span>
                     </div>
-
-                    <div class="bg-white border-2 border-amber-100 p-6 rounded-3xl flex items-center gap-6 shadow-sm">
-                        <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl shadow-inner">🎓</div>
-                        <div>
-                            <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Recommended Certification</p>
-                            <h4 id="disp-cert" class="text-xl font-bold text-slate-800 leading-tight"></h4>
+                    
+                    <h2 id="disp-question" class="text-xl md:text-2xl font-800 text-slate-800 leading-snug mb-8"></h2>
+                    
+                    <div id="answer-box" class="hidden">
+                        <div class="bg-slate-50 border-l-4 border-blue-600 p-5 rounded-r-2xl">
+                            <h4 class="text-blue-600 font-black text-[10px] uppercase mb-2 tracking-widest">Suggested Answer</h4>
+                            <p id="disp-answer" class="text-slate-600 leading-relaxed text-sm md:text-base italic"></p>
                         </div>
                     </div>
                 </div>
 
-                <div id="welcome-screen" class="bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200 p-20 text-center">
-                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 bg-white rounded-full text-2xl shadow-sm">🚀</div>
-                    <p class="text-slate-500 font-bold text-lg">Pick a role to start your practice session.</p>
+                <div class="flex flex-col sm:flex-row gap-3 mt-10">
+                    <button onclick="toggleAnswer()" id="ans-btn" class="flex-1 bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition-all">Show Answer</button>
+                    <button onclick="nextQuestion()" class="flex-1 bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-500 shadow-lg shadow-blue-200">Next Question →</button>
                 </div>
             </div>
+
+            <div class="bg-amber-50 border border-amber-100 p-5 rounded-2xl flex items-center gap-4">
+                <div class="text-2xl">🎓</div>
+                <div>
+                    <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-0.5">Recommended Cert</p>
+                    <h4 id="disp-cert" class="text-slate-800 font-bold text-sm md:text-base"></h4>
+                </div>
+            </div>
+        </div>
+
+        <div id="welcome-screen" class="bg-white rounded-[2rem] p-12 text-center border-2 border-dashed border-slate-200">
+            <div class="text-4xl mb-4">🎯</div>
+            <p class="text-slate-500 font-bold">Select a role above to begin.</p>
         </div>
     </div>
 
     <script>
         // PASTE YOUR GOOGLE SHEET CSV LINK HERE
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsCBf6RM1KTWmT9Fzr9ABS3_08fVIYKEX5UbUlufi4DnIA9sb0zcRa0W49cb76yetcWXGGPtI9x21u/pub?gid=327169888&single=true&output=csv";
+        const SHEET_URL = "REPLACE_WITH_YOUR_CSV_LINK";
 
         let allData = [];
         let currentQuestions = [];
         let currentIdx = 0;
 
-        // Fetch Data
         Papa.parse(SHEET_URL, {
             download: true,
             header: true,
             complete: function(results) {
-                // Filter out empty rows and link to your exact headers
                 allData = results.data.filter(row => row.Role && row.Category);
-                document.getElementById('status-dot').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> LIVE SYNC';
+                document.getElementById('status-dot').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> LIVE';
                 initApp();
             }
         });
@@ -104,7 +99,7 @@
             const catBar = document.getElementById('category-bar');
             
             catBar.innerHTML = categories.map(cat => 
-                `<button onclick="filterByCategory('${cat}')" id="btn-${cat.replace(/\s/g, '')}" class="cat-btn bg-white border border-slate-200 px-6 py-2 rounded-xl font-bold text-sm text-slate-600 hover:border-blue-400 transition-all">${cat}</button>`
+                `<button onclick="filterByCategory('${cat}')" id="btn-${cat.replace(/\s/g, '')}" class="cat-btn whitespace-nowrap bg-white border border-slate-200 px-5 py-2 rounded-full font-bold text-xs text-slate-500 transition-all">${cat}</button>`
             ).join('');
 
             filterByCategory("All");
@@ -115,18 +110,16 @@
             const btn = document.getElementById(`btn-${cat.replace(/\s/g, '')}`);
             if(btn) btn.classList.add('active-cat');
 
-            const roleList = document.getElementById('role-list');
+            const dropdown = document.getElementById('role-dropdown');
             const filteredData = cat === "All" ? allData : allData.filter(d => d.Category === cat);
             const uniqueRoles = [...new Set(filteredData.map(d => d.Role))];
             
-            roleList.innerHTML = uniqueRoles.map(role => `
-                <button onclick="startInterview('${role}')" class="w-full text-left p-4 rounded-xl font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all mb-1">
-                    ${role}
-                </button>
-            `).join('');
+            dropdown.innerHTML = '<option value="">Choose a role...</option>' + 
+                uniqueRoles.map(role => `<option value="${role}">${role}</option>`).join('');
         }
 
         function startInterview(roleName) {
+            if(!roleName) return;
             currentQuestions = allData.filter(d => d.Role === roleName);
             currentIdx = 0;
             document.getElementById('welcome-screen').classList.add('hidden');
@@ -138,14 +131,11 @@
             const data = currentQuestions[currentIdx];
             document.getElementById('disp-role-badge').innerText = data.Role;
             document.getElementById('disp-question').innerText = data.Question;
-            
-            // USING YOUR SPECIFIC HEADERS HERE
             document.getElementById('disp-answer').innerText = data["Suggested Answer Strategy"];
-            document.getElementById('disp-cert').innerText = data["Recommended Certificate"] || "N/A";
-            
-            document.getElementById('q-counter').innerText = `Question ${currentIdx + 1} / ${currentQuestions.length}`;
+            document.getElementById('disp-cert').innerText = data["Recommended Certificate"] || "Not Specified";
+            document.getElementById('q-counter').innerText = `${currentIdx + 1} / ${currentQuestions.length}`;
             document.getElementById('answer-box').classList.add('hidden');
-            document.getElementById('ans-btn').innerText = "Show Strategy";
+            document.getElementById('ans-btn').innerText = "Show Answer";
         }
 
         function nextQuestion() {
@@ -157,7 +147,7 @@
             const box = document.getElementById('answer-box');
             const btn = document.getElementById('ans-btn');
             box.classList.toggle('hidden');
-            btn.innerText = box.classList.contains('hidden') ? "Show Strategy" : "Hide Strategy";
+            btn.innerText = box.classList.contains('hidden') ? "Show Answer" : "Hide Answer";
         }
     </script>
 </body>
