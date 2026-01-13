@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Mastery | Wrapped Layout</title>
+    <title>Interview Mastery | Comprehensive Prep</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,9 +11,10 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
         .active-cat { background: #2563eb !important; color: white !important; border-color: #2563eb !important; transform: scale(1.02); }
         .cat-btn { transition: all 0.2s ease-in-out; }
-        /* Professional pulse for the live status */
         .status-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        .skill-tag { transition: all 0.3s ease; }
+        .skill-tag:hover { transform: translateY(-2px); background-color: #dbeafe; }
     </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-900">
@@ -22,7 +23,7 @@
         <header class="mb-10 flex justify-between items-start">
             <div>
                 <h1 class="text-3xl font-800 tracking-tight">Interview <span class="text-blue-600">Mastery</span></h1>
-                <p class="text-slate-500 font-medium">Ace your prep with industry-standard answers.</p>
+                <p class="text-slate-500 font-medium">Industry-standard insights and role-specific prep.</p>
             </div>
             <div id="status-dot" class="hidden md:flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 status-pulse"></span>
@@ -32,8 +33,7 @@
 
         <div class="mb-8">
             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-1 italic">Step 1: Choose Industry Category</label>
-            <div id="category-bar" class="flex flex-wrap gap-2">
-                </div>
+            <div id="category-bar" class="flex flex-wrap gap-2"></div>
         </div>
 
         <div class="mb-10">
@@ -48,10 +48,23 @@
             </div>
         </div>
 
+        <div id="role-overview-panel" class="hidden mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
+            <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">📋</span>
+                    <h3 class="text-xl font-800 text-slate-800">Role Overview</h3>
+                </div>
+                <p id="disp-role-desc" class="text-slate-600 leading-relaxed mb-6 font-medium"></p>
+                
+                <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3">Key Software & Skills</h4>
+                <div id="disp-role-skills" class="flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+
         <div id="practice-panel" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-500">
             <div class="bg-white p-6 md:p-12 rounded-[2.5rem] shadow-2xl shadow-blue-900/5 border border-white relative overflow-hidden">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-                    <span id="disp-role-badge" class="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md shadow-blue-200"></span>
+                    <span id="disp-role-badge" class="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest"></span>
                     <span id="q-counter" class="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-100"></span>
                 </div>
                 
@@ -83,33 +96,36 @@
             </div>
         </div>
 
-        <div id="welcome-screen" class="bg-white rounded-[2.5rem] p-16 text-center border-2 border-dashed border-slate-200 transition-all">
+        <div id="welcome-screen" class="bg-white rounded-[2.5rem] p-16 text-center border-2 border-dashed border-slate-200">
             <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner">🎯</div>
             <h3 class="text-xl font-800 text-slate-800 mb-2">Ready to Start?</h3>
-            <p class="text-slate-400 font-medium">Select a category and a job role to view specialized interview strategies.</p>
+            <p class="text-slate-400 font-medium">Select a role to view the roadmap and practice questions.</p>
         </div>
     </div>
 
     <script>
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsCBf6RM1KTWmT9Fzr9ABS3_08fVIYKEX5UbUlufi4DnIA9sb0zcRa0W49cb76yetcWXGGPtI9x21u/pub?gid=327169888&single=true&output=csv";
+        // URLs for the two different sheets
+        const QA_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsCBf6RM1KTWmT9Fzr9ABS3_08fVIYKEX5UbUlufi4DnIA9sb0zcRa0W49cb76yetcWXGGPtI9x21u/pub?gid=327169888&single=true&output=csv";
+        const ROLE_DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsCBf6RM1KTWmT9Fzr9ABS3_08fVIYKEX5UbUlufi4DnIA9sb0zcRa0W49cb76yetcWXGGPtI9x21u/pub?gid=0&single=true&output=csv"; // UPDATE GID TO YOUR ROLE DATA TAB
 
-        let allData = [];
+        let allQA = [];
+        let allRoleData = [];
         let currentQuestions = [];
         let currentIdx = 0;
 
-        Papa.parse(SHEET_URL, {
-            download: true,
-            header: true,
-            complete: function(results) {
-                allData = results.data.filter(row => row.Role && row.Category);
-                initApp();
-            }
+        // Fetching both sheets
+        Promise.all([
+            new Promise(resolve => Papa.parse(QA_SHEET_URL, { download: true, header: true, complete: res => resolve(res.data) })),
+            new Promise(resolve => Papa.parse(ROLE_DATA_URL, { download: true, header: true, complete: res => resolve(res.data) }))
+        ]).then(([qaData, roleData]) => {
+            allQA = qaData.filter(row => row.Role && row.Category);
+            allRoleData = roleData.filter(row => row.Role);
+            initApp();
         });
 
         function initApp() {
-            const categories = [...new Set(allData.map(item => item.Category))];
+            const categories = [...new Set(allQA.map(item => item.Category))];
             const catBar = document.getElementById('category-bar');
-            
             catBar.innerHTML = categories.map(cat => 
                 `<button onclick="handleCategoryClick('${cat}')" id="btn-${cat.replace(/\s/g, '')}" class="cat-btn bg-white border border-slate-200 px-5 py-3 rounded-2xl font-bold text-sm text-slate-500 hover:border-blue-400 hover:text-blue-600 transition-all shadow-sm">${cat}</button>`
             ).join('');
@@ -117,27 +133,35 @@
 
         function handleCategoryClick(cat) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
-            const btn = document.getElementById(`btn-${cat.replace(/\s/g, '')}`);
-            if(btn) btn.classList.add('active-cat');
+            document.getElementById(`btn-${cat.replace(/\s/g, '')}`)?.classList.add('active-cat');
 
             const dropdown = document.getElementById('role-dropdown');
-            const filteredRoles = [...new Set(allData.filter(d => d.Category === cat).map(d => d.Role))];
+            const filteredRoles = [...new Set(allQA.filter(d => d.Category === cat).map(d => d.Role))];
             
-            dropdown.innerHTML = '<option value="">Select a Role in ' + cat + '...</option>' + 
+            dropdown.innerHTML = `<option value="">Select a Role in ${cat}...</option>` + 
                 filteredRoles.map(role => `<option value="${role}">${role}</option>`).join('');
-            
-            // Auto-scroll to dropdown on mobile for better UX
-            if(window.innerWidth < 768) {
-                dropdown.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
 
             document.getElementById('practice-panel').classList.add('hidden');
+            document.getElementById('role-overview-panel').classList.add('hidden');
             document.getElementById('welcome-screen').classList.remove('hidden');
         }
 
         function startInterview(roleName) {
             if(!roleName) return;
-            currentQuestions = allData.filter(d => d.Role === roleName);
+            
+            // 1. Load Role Meta Data (Description & Skills)
+            const meta = allRoleData.find(d => d.Role === roleName);
+            if(meta) {
+                document.getElementById('disp-role-desc').innerText = meta["Role Description"] || "Experience-driven role overview.";
+                const skills = (meta["Key Software / Skills"] || "").split(',').map(s => s.trim()).filter(s => s);
+                document.getElementById('disp-role-skills').innerHTML = skills.map(skill => 
+                    `<span class="skill-tag bg-blue-50 text-blue-600 border border-blue-100 px-3 py-1 rounded-lg text-xs font-bold">${skill}</span>`
+                ).join('');
+                document.getElementById('role-overview-panel').classList.remove('hidden');
+            }
+
+            // 2. Load QA Data
+            currentQuestions = allQA.filter(d => d.Role === roleName);
             currentIdx = 0;
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('practice-panel').classList.remove('hidden');
@@ -149,7 +173,7 @@
             document.getElementById('disp-role-badge').innerText = data.Role;
             document.getElementById('disp-question').innerText = data.Question;
             document.getElementById('disp-answer').innerText = data["Suggested Answer Strategy"];
-            document.getElementById('disp-cert').innerText = data["Recommended Certificate"] || "General Industry Standard";
+            document.getElementById('disp-cert').innerText = data["Recommended Certificate"] || "Industry Standard";
             document.getElementById('q-counter').innerText = `Question ${currentIdx + 1} of ${currentQuestions.length}`;
             document.getElementById('answer-box').classList.add('hidden');
             document.getElementById('ans-btn').innerText = "Show Answer";
